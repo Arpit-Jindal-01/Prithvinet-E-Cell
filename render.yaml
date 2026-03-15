@@ -1,3 +1,9 @@
+databases:
+  - name: prithvinet-db
+    databaseName: prithvinet
+    user: prithvinet
+    plan: free
+
 services:
   - type: web
     name: prithvinet-backend
@@ -7,10 +13,14 @@ services:
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
-        sync: false          # set manually in Render dashboard
-      - key: GEMINI_API_KEY
-        sync: false
+        fromDatabase:
+          name: prithvinet-db
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        generateValue: true        # Render auto-generates a secure random secret
       - key: GROQ_API_KEY
-        sync: false
+        sync: false                # Set manually in Render dashboard
       - key: WAQI_TOKEN
-        sync: false
+        value: demo                # Free public token; replace with your own if needed
+      - key: FRONTEND_URL
+        sync: false                # Set to your Vercel URL after deploying frontend
